@@ -5,6 +5,7 @@ import {
   Router,
   RouteRecordRaw,
 } from "vue-router";
+import { useMainStore } from "../store/index"; // 仓库
 //由于router的API默认使用了类型进行初始化，内部包含类型定义，所以本文内部代码中的所有数据类型是可以省略的
 //RouterRecordRaw是路由组件对象
 const routes: RouteRecordRaw[] = [
@@ -64,5 +65,19 @@ const options: RouterOptions = {
 
 // Router是路由对象类型
 const router: Router = createRouter(options);
+
+// 前置路由守卫
+router.beforeEach((to, _from, next) => {
+  if (to.path == "/login" || to.path == "/register") {
+    next();
+  } else {
+    const mainStore = useMainStore();
+    if (mainStore.account !== "") {
+      next();
+    } else {
+      next("/login");
+    }
+  }
+});
 
 export default router;

@@ -35,6 +35,7 @@
 import router from "@/router";
 import { reactive, ref } from "vue";
 import { reqLogin } from "@/api/index";
+import { useMainStore } from "../store/index";
 
 const ruleFormRef = ref();
 
@@ -62,6 +63,8 @@ const toLogin = () => {
   router.push("/home");
 };
 
+const mainStore = useMainStore();
+// 登录
 const submitForm = (formEl: any) => {
   if (!formEl) return;
   formEl.validate(async (valid: any) => {
@@ -73,7 +76,13 @@ const submitForm = (formEl: any) => {
         .catch((err) => {
           return err;
         });
-      result.length == 1 ? router.push("/home") : changeStyle();
+      if (result.length == 1) {
+        mainStore.account = ruleForm.account;
+        console.log(mainStore.account, ruleForm.account);
+        router.push("/home");
+      } else {
+        changeStyle();
+      }
     } else {
       //   console.log("error submit!");
       return false;

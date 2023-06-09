@@ -209,21 +209,62 @@ app.get("/api/selectphone", (request, response) => {
   let re = url.parse(request.url, true);
   let query = re.query;
   let sql = `select * from users where account='${query.account}' and password='${query.password}';`;
-  let = res = { code: 1, info: "" };
+  let = res = { code: 0, info: "error" };
   connection.query(sql, (err, result) => {
     if (err) {
       console.log(err);
-      res = { code: 0, info: "error" };
       response.status(200).send(res);
     }
     if (result.length == 1) {
       res.code = 1;
       res.info = "success";
-    } else {
-      res.code = 0;
-      res.info = "error";
     }
     response.status(200).send(res);
+  });
+});
+// 手机注册
+app.get("/api/insertphone", (request, response) => {
+  let re = url.parse(request.url, true);
+  let query = re.query;
+  console.log("query:", query);
+  let sql = `select * from users where account=${query.account} or name=${query.name};`;
+  console.log(sql, "#");
+  let = res = { code: 0, info: "error" };
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.info = "err";
+      response.status(200).send(res);
+    }
+    if (!result.length) {
+      // 用户不存在
+      let sql2 =
+        "insert into users (`name`,`account`,`password`) value(" +
+        query.name +
+        "," +
+        query.account +
+        "," +
+        query.password +
+        ");";
+      console.log(sql2);
+      let uu = connection.query(sql2, (err, result) => {
+        if (err) {
+          console.log(err);
+          res.info = "err";
+          response.status(200).send(res);
+        }
+        // console.log(result, "##");
+        res.code = 1;
+        res.info = "success";
+        response.status(200).send(res);
+      });
+      console.log(uu);
+    } else {
+      // 用户已存在
+      res.info = "用户已存在";
+      response.status(200).send(res);
+      return;
+    }
   });
 });
 
