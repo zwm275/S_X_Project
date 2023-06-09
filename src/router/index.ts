@@ -66,6 +66,7 @@ const options: RouterOptions = {
 // Router是路由对象类型
 const router: Router = createRouter(options);
 
+// 登录
 // 前置路由守卫
 router.beforeEach((to, _from, next) => {
   if (to.path == "/login" || to.path == "/register") {

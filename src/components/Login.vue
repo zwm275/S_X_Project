@@ -63,6 +63,7 @@ const toLogin = () => {
   router.push("/home");
 };
 
+// 仓库
 const mainStore = useMainStore();
 // 登录
 const submitForm = (formEl: any) => {
